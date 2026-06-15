@@ -113,12 +113,18 @@
       return null;
     }
     var snapshot = PwaGridCalculator.getConfidenceSnapshot();
-    if (!snapshot || !snapshot.params || !snapshot.worstColumn) {
+    if (!snapshot || !snapshot.params) {
+      return null;
+    }
+
+    var col = typeof PwaGridCalculator.getAdvancedTcVoltageDropColumn === 'function'
+      ? PwaGridCalculator.getAdvancedTcVoltageDropColumn()
+      : snapshot.worstColumn;
+    if (!col) {
       return null;
     }
 
     var params = snapshot.params;
-    var col = snapshot.worstColumn;
     var adv = global.PwaAdvancedThermalUI && PwaAdvancedThermalUI.getExportData
       ? PwaAdvancedThermalUI.getExportData()
       : null;
@@ -363,6 +369,21 @@
         el.textContent = map[id];
       }
     });
+
+    var awgNote = document.querySelector('.pwa-adv-tc-vdrop__awg-note');
+    if (awgNote && global.PwaGridCalculator && typeof PwaGridCalculator.getSelectedAwgLabels === 'function') {
+      var selected = PwaGridCalculator.getSelectedAwgLabels();
+      if (selected.length === 1) {
+        awgNote.innerHTML = 'AWG column: <span id="pwa-adv-tc-vdrop-res-awg">AWG ' + result.awg + '</span>';
+      } else if (selected.length > 1) {
+        awgNote.innerHTML =
+          'Worst-case AWG column (among ' + selected.length + ' selected): ' +
+          '<span id="pwa-adv-tc-vdrop-res-awg">AWG ' + result.awg + '</span>';
+      } else {
+        awgNote.innerHTML =
+          'Worst-case AWG column: <span id="pwa-adv-tc-vdrop-res-awg">AWG ' + result.awg + '</span>';
+      }
+    }
 
     var supStatusEl = $('pwa-adv-tc-vdrop-res-sup-status');
     if (supStatusEl) {

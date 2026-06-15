@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../assets/css/corporate.css">
+  <script src="../../assets/js/site-layout.js" defer></script>
+  <title>Wire Data Templates — Engineering Knowledge</title>
+</head>
+<body>
+  <section class="page-hero">
+    <h1>Wire Data Templates</h1>
+    <p class="lead">Controlled wire specification spreadsheets for Power Wire Analysis external data mode.</p>
+  </section>
+  <div class="page-container">
+    <p class="content-nav"><a href="../../index.html">&larr; Back to Hub</a> · <a href="../../calculators/aerospace-electrical-design/power-wire-analysis.html">Power Wire Analysis</a></p>
+
+    <div class="callout">
+      <strong>Controlled engineering source data:</strong> These templates provide programme-governed wire catalog data
+      for the Power Wire Analysis calculator. Populate, approve, version-control externally, then load in
+      <strong>External controlled wire spreadsheets</strong> mode on the calculator.
+    </div>
+
+    <section class="card">
+      <h2 class="card__title">What these templates are</h2>
+      <p>Multi-sheet Excel workbooks containing metadata, AWG resistance tables, thermal/derating references, advanced analysis notes, validation case placeholders, and change history — aligned with the site wire data schema (<code>pwa-wire-data-schema.js</code>).</p>
+      <p>Each template is pre-filled with manufacturer seed data matching the built-in catalog (for traceability). You may load a spreadsheet without <code>DATA_LOCKED</code>; set it to <code>YES</code> when the file is formally approved controlled source data.</p>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">Download templates</h2>
+      <ul class="link-list">
+        <li><a href="templates/wire-spec-kp260-template.xlsx" download>KP260 (K.Lacey) — wire specification template</a></li>
+        <li><a href="templates/wire-spec-raychem-55a0811-template.xlsx" download>Raychem 55A0811 — wire specification template</a></li>
+      </ul>
+      <p class="text-muted">Regenerate templates after catalog changes: <code>node scripts/build-wire-spec-templates.js</code></p>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">How to fill in and approve</h2>
+      <ol>
+        <li>Download the template for your wire family.</li>
+        <li>Review the <strong>Metadata</strong> and <strong>AWG_Data</strong> sheets against the approved manufacturer datasheet.</li>
+        <li>Complete <strong>Prepared by</strong>, <strong>Checked by</strong>, and <strong>Approved by</strong> on Metadata.</li>
+        <li>Record changes on <strong>Change_History</strong>.</li>
+        <li>Optionally set <strong>DATA_LOCKED</strong> to <code>YES</code> when the spreadsheet is formally approved controlled source data.</li>
+        <li>Store the file in your programme configuration management system.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">How to load into Power Wire Analysis</h2>
+      <ol>
+        <li>Open <a href="../../calculators/aerospace-electrical-design/power-wire-analysis.html">Power Wire Analysis</a>.</li>
+        <li>Expand <strong>Project Folder, Wire Data &amp; Reports</strong> at the top of the page.</li>
+        <li>Select <strong>External controlled wire spreadsheets</strong>.</li>
+        <li>Click <strong>Load wire specification spreadsheet</strong> and choose your approved file.</li>
+        <li>Confirm validation status shows <strong>Validated</strong> (warnings may appear if <code>DATA_LOCKED</code> is not YES).</li>
+      </ol>
+      <p>Invalid spreadsheets are rejected and calculations revert to internal built-in data. The data source banner above the workflow panel shows which mode is active.</p>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">Internal vs external data mode</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Mode</th>
+            <th scope="col">Source</th>
+            <th scope="col">When to use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Internal wire specifications</td>
+            <td>Built-in site catalog (KP260, Raychem 55A0811)</td>
+            <td>Default safe mode, training, and quick analysis</td>
+          </tr>
+          <tr>
+            <td>External controlled wire spreadsheets</td>
+            <td>Programme-approved Excel templates from this page</td>
+            <td>Certification support, customer-specific approved wire data, audit trail</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">Browser limitations</h2>
+      <p>Power Wire Analysis runs in the browser. Folder read/write uses the File System Access API where supported (Chrome, Edge). Other browsers use manual file upload and download. The site does not upload wire data or project files to a server.</p>
+      <p>See also <a href="../../calculators/aerospace-electrical-design/power-wire-analysis-help.html">Power Wire Analysis — Help</a>.</p>
+    </section>
+  </div>
+</body>
+</html>

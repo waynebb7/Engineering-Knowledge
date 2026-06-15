@@ -109,6 +109,10 @@
     });
   }
 
+  function buildWireRowsFromType(wireType) {
+    return buildWireRows(wireType);
+  }
+
   function listWireTypes() {
     return WIRE_TYPES.map(function (wireType) {
       return {
@@ -122,10 +126,19 @@
     WIRE_TYPES: WIRE_TYPES,
     OHM_KM_TO_OHM_1000FT: OHM_KM_TO_OHM_1000FT,
     ohm1000ftFromKm: ohm1000ftFromKm,
-    getWireType: findWireType,
+    getWireType: function (wireTypeId) {
+      if (global.PwaWireDataLoader && PwaWireDataLoader.isExternalActive()) {
+        return PwaWireDataLoader.getWireType(wireTypeId);
+      }
+      return findWireType(wireTypeId);
+    },
     getWireRows: function (wireTypeId) {
+      if (global.PwaWireDataLoader && PwaWireDataLoader.isExternalActive()) {
+        return PwaWireDataLoader.getWireRows(wireTypeId);
+      }
       return buildWireRows(findWireType(wireTypeId));
     },
+    buildWireRowsFromType: buildWireRowsFromType,
     listWireTypes: listWireTypes
   };
 })(typeof window !== 'undefined' ? window : this);

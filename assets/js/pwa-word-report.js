@@ -390,6 +390,34 @@
     return buildTable(rows, [labelWidth, valueWidth]);
   }
 
+  function buildWireDataAuditTable(audit) {
+    if (!audit) {
+      return '';
+    }
+    var labelWidth = Math.floor(CONTENT_WIDTH * 0.38);
+    var rows = [{
+      header: true,
+      cells: ['Wire data audit', 'Value']
+    }, {
+      cells: ['Data source mode', audit.dataSourceLabel || audit.dataSourceMode || '—']
+    }, {
+      cells: ['Declaration', audit.internalExternalDeclaration || '—']
+    }, {
+      cells: ['Wire spreadsheet file', audit.wireSpreadsheetFileName || '—']
+    }, {
+      cells: ['Wire specification revision', audit.wireSpecificationRevision || '—']
+    }, {
+      cells: ['Validation status', audit.dataValidationStatus || '—']
+    }, {
+      cells: ['Calculation timestamp', audit.calculationTimestamp || '—']
+    }, {
+      cells: ['Project folder status', audit.projectFolderStatus || '—']
+    }, {
+      cells: ['Browser folder API', audit.browserFolderApiSupported ? 'Supported' : 'Not supported']
+    }];
+    return buildTable(rows, [labelWidth, CONTENT_WIDTH - labelWidth]);
+  }
+
   function buildCoverSummaryTable(meta, sections) {
     var snapshot = sections && sections[0] ? sections[0].snapshot : {};
     var projectNumber = meta.projectNumber || (snapshot && snapshot.projectNumber) || '';
@@ -847,6 +875,12 @@
     }], [Math.floor(CONTENT_WIDTH * 0.28), CONTENT_WIDTH - Math.floor(CONTENT_WIDTH * 0.28)]));
     parts.push(paragraph('1. Input parameters', 'Heading2', { spacing: '80' }));
     parts.push(buildParameterTable(snapshot));
+    if (snapshot.wireDataAudit || (global.PwaWireDataLoader && PwaWireDataLoader.getAuditInfo)) {
+      parts.push(paragraph('1a. Wire data source audit', 'Heading2', { spacing: '80' }));
+      parts.push(buildWireDataAuditTable(
+        snapshot.wireDataAudit || (global.PwaWireDataLoader ? PwaWireDataLoader.getAuditInfo() : null)
+      ));
+    }
     parts.push(paragraph('2. Engineering assessment', 'Heading2', { spacing: '80' }));
     parts.push(buildEngineeringAssessmentTable(section.engineeringAssessment));
     parts.push(paragraph('3. AWG analysis grid', 'Heading2', { spacing: '80' }));

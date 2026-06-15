@@ -45,6 +45,7 @@
   var ADVANCED_THERMAL_SHEET = 'Advanced Heat-Balance';
   var ADVANCED_TC_VDROP_SHEET = 'Advanced Tc Vdrop';
   var TRANSIENT_SHEET = 'Transient Thermal';
+  var WIRE_DATA_AUDIT_SHEET = 'Wire Data Audit';
   var SECTION_COL_COUNT = 6;
   var META_KEYS = ['pwa_workbook_version', 'pwa_exported_at', 'pwa_grid_title'];
 
@@ -201,6 +202,85 @@
       }
     ];
     return rows;
+  }
+
+  function buildWireDataAuditRows(audit, colCount) {
+    if (!audit) {
+      return [];
+    }
+    colCount = colCount || 3;
+    return [
+      { spacer: true, height: 8 },
+      {
+        cells: [{ text: 'WIRE DATA SOURCE AUDIT', span: colCount }],
+        styleKey: 'sectionHeader',
+        height: 20
+      },
+      {
+        cells: [
+          { text: 'Data source mode', styleKey: 'tableLabel' },
+          { text: audit.dataSourceLabel || audit.dataSourceMode || '—', styleKey: 'tableData', span: colCount - 1 }
+        ]
+      },
+      {
+        cells: [
+          { text: 'Internal / external declaration', styleKey: 'tableLabel' },
+          { text: audit.internalExternalDeclaration || '—', styleKey: 'paramNotes', span: colCount - 1 }
+        ]
+      },
+      {
+        cells: [
+          { text: 'Wire spreadsheet file', styleKey: 'tableLabel' },
+          { text: audit.wireSpreadsheetFileName || '—', styleKey: 'tableData', span: colCount - 1 }
+        ]
+      },
+      {
+        cells: [
+          { text: 'Wire specification revision', styleKey: 'tableLabel' },
+          { text: audit.wireSpecificationRevision || '—', styleKey: 'tableData', span: colCount - 1 }
+        ]
+      },
+      {
+        cells: [
+          { text: 'Wire specification name', styleKey: 'tableLabel' },
+          { text: audit.wireSpecificationName || '—', styleKey: 'tableData', span: colCount - 1 }
+        ]
+      },
+      {
+        cells: [
+          { text: 'Data validation status', styleKey: 'tableLabel' },
+          { text: audit.dataValidationStatus || '—', styleKey: 'tableData', span: colCount - 1 }
+        ]
+      },
+      {
+        cells: [
+          { text: 'Calculation timestamp (UTC)', styleKey: 'tableLabel' },
+          { text: audit.calculationTimestamp || '—', styleKey: 'tableData', span: colCount - 1 }
+        ]
+      },
+      {
+        cells: [
+          { text: 'Browser folder API', styleKey: 'tableLabel' },
+          {
+            text: audit.browserFolderApiSupported ? 'Supported' : 'Not supported',
+            styleKey: 'tableData',
+            span: colCount - 1
+          }
+        ]
+      },
+      {
+        cells: [
+          { text: 'Project folder status', styleKey: 'tableLabel' },
+          { text: audit.projectFolderStatus || '—', styleKey: 'tableData', span: colCount - 1 }
+        ]
+      },
+      {
+        cells: [
+          { text: 'Project folder label', styleKey: 'tableLabel' },
+          { text: audit.projectFolderLabel || '—', styleKey: 'tableData', span: colCount - 1 }
+        ]
+      }
+    ];
   }
 
   function advancedPassFailStyle(passFail) {
@@ -1929,6 +2009,13 @@
     );
     addSectionWorksheet(
       files, ctRef, relRef, sheetsRef, sheetCtx,
+      WIRE_DATA_AUDIT_SHEET,
+      buildWireDataAuditRows(meta.wireDataAudit || snapshot.wireDataAudit, SECTION_COL_COUNT),
+      snapshot,
+      'Wire data source and validation audit trail'
+    );
+    addSectionWorksheet(
+      files, ctRef, relRef, sheetsRef, sheetCtx,
       TRACEABILITY_SHEET,
       buildTraceabilityRows(meta.standardsTraceability, SECTION_COL_COUNT),
       snapshot,
@@ -2400,17 +2487,117 @@
       .replace(/&amp;/g, '&');
   }
 
-  async function importWorkbook(file) {
+  async function parseWorkbookEntriesFromFile(file) {
     var arrayBuffer = await readFileArrayBuffer(file);
     var buffer = new Uint8Array(arrayBuffer);
-    var entries = await extractZipEntries(buffer);
+    return extractZipEntries(buffer);
+  }
+
+  function findSheetPathByName(entries, sheetName) {
+    if (!entries || !sheetName) {
+      return null;
+    }
+    var workbookXml = entries['xl/workbook.xml'];
+    var relsXml = entries['xl/_rels/workbook.xml.rels'];
+    if (!workbookXml || !relsXml) {
+      return null;
+    }
+    var workbookText = new TextDecoder().decode(workbookXml);
+    var relsText = new TextDecoder().decode(relsXml);
+    var escaped = String(sheetName).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var sheetMatch = workbookText.match(
+      new RegExp('<sheet[^>]*name="' + escaped + '"[^>]*r:id="([^"]+)"', 'i')
+    );
+    if (!sheetMatch) {
+      return null;
+    }
+    var relMatch = relsText.match(
+      new RegExp('<Relationship[^>]*Id="' + sheetMatch[1] + '"[^>]*Target="([^"]+)"', 'i')
+    );
+    if (!relMatch) {
+      return null;
+    }
+    var target = relMatch[1].replace(/^\//, '');
+    if (target.indexOf('xl/') !== 0) {
+      target = 'xl/' + target;
+    }
+    return entries[target] ? target : null;
+  }
+
+  function parseSheetRowsFromEntries(entries, sheetPath) {
+    if (!entries || !sheetPath || !entries[sheetPath]) {
+      return [];
+    }
+    var sheetXml = new TextDecoder().decode(entries[sheetPath]);
+    var sharedStrings = parseSharedStrings(entries);
+    return parseSheetRows(sheetXml, sharedStrings);
+  }
+
+  function parseKeyValueSheet(rows, keyCol, valueCol) {
+    keyCol = keyCol || 'A';
+    valueCol = valueCol || 'B';
+    var out = {};
+    var r;
+    for (r = 0; r < rows.length; r += 1) {
+      var cells = rows[r];
+      if (!cells || !cells[keyCol]) {
+        continue;
+      }
+      var rawKey = String(cells[keyCol]).trim();
+      if (!rawKey || rawKey.toLowerCase() === 'field' || rawKey.toLowerCase() === 'key') {
+        continue;
+      }
+      out[rawKey] = cells[valueCol] == null ? '' : String(cells[valueCol]).trim();
+    }
+    return out;
+  }
+
+  function parseTableSheet(rows, headerRowNum) {
+    headerRowNum = headerRowNum || 1;
+    var headers = rows[headerRowNum];
+    if (!headers) {
+      return [];
+    }
+    var cols = Object.keys(headers).sort(function (a, b) {
+      return a.charCodeAt(0) - b.charCodeAt(0);
+    });
+    var headerMap = {};
+    cols.forEach(function (col) {
+      var label = String(headers[col] || '').trim();
+      if (label) {
+        headerMap[col] = label;
+      }
+    });
+    var records = [];
+    var r;
+    for (r = headerRowNum + 1; r < rows.length; r += 1) {
+      var cells = rows[r];
+      if (!cells) {
+        continue;
+      }
+      var hasData = false;
+      var record = {};
+      Object.keys(headerMap).forEach(function (col) {
+        var val = cells[col];
+        if (val != null && String(val).trim() !== '') {
+          hasData = true;
+        }
+        record[headerMap[col]] = val == null ? '' : String(val).trim();
+      });
+      if (hasData) {
+        records.push(record);
+      }
+    }
+    return records;
+  }
+
+  async function importWorkbook(file) {
+    var entries = await parseWorkbookEntriesFromFile(file);
     var sheetPath = findParametersSheetPath(entries);
     if (!sheetPath) {
       throw new Error('Parameters sheet not found. Use Export Excel report to create an importable workbook.');
     }
-    var sheetXml = new TextDecoder().decode(entries[sheetPath]);
-    var sharedStrings = parseSharedStrings(entries);
-    var rows = parseSheetRows(sheetXml, sharedStrings);
+    var rows = parseSheetRowsFromEntries(entries, sheetPath);
     var parameters = {};
     var knownKeys = {};
     var hasKeyHeader = false;
@@ -2443,7 +2630,10 @@
       );
     }
     if (global.PwaWireCatalog && !PwaWireCatalog.getWireType(parameters.wireType)) {
-      throw new Error('Unknown wire type in workbook: ' + parameters.wireType);
+      if (!(global.PwaWireDataLoader && PwaWireDataLoader.isExternalActive() &&
+          PwaWireDataLoader.getWireType(parameters.wireType))) {
+        throw new Error('Unknown wire type in workbook: ' + parameters.wireType);
+      }
     }
 
     return { parameters: parameters, version: WORKBOOK_VERSION };
@@ -2455,6 +2645,12 @@
     exportWorkbook: exportWorkbook,
     buildWorkbookBlob: buildWorkbookBlob,
     importWorkbook: importWorkbook,
+    parseWorkbookEntriesFromFile: parseWorkbookEntriesFromFile,
+    findSheetPathByName: findSheetPathByName,
+    parseSheetRowsFromEntries: parseSheetRowsFromEntries,
+    parseKeyValueSheet: parseKeyValueSheet,
+    parseTableSheet: parseTableSheet,
+    readFileArrayBuffer: readFileArrayBuffer,
     sanitizeFilename: sanitizeFilename,
     normalizeWireNumber: normalizeWireNumber,
     normalizeProjectNumber: normalizeProjectNumber,
@@ -2469,6 +2665,7 @@
     buildTemperatureStatusLegend: buildTemperatureStatusLegend,
     buildTemperatureAssessmentNote: buildTemperatureAssessmentNote,
     buildEngineeringAssessmentRows: buildEngineeringAssessmentRows,
+    buildWireDataAuditRows: buildWireDataAuditRows,
     buildAdvancedThermalRows: buildAdvancedThermalRows,
     buildTraceabilityRows: buildTraceabilityRows,
     buildConfidenceRows: buildConfidenceRows,

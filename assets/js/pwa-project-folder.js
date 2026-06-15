@@ -173,11 +173,26 @@
     };
   }
 
+  function clearFolder() {
+    folderHandle = null;
+    folderLabel = '';
+    files = [];
+    activeFileName = '';
+    canWrite = false;
+    return getState();
+  }
+
+  function supportsFolderPicker() {
+    return typeof global.showDirectoryPicker === 'function';
+  }
+
   global.PwaProjectFolder = {
     parseWireId: parseWireId,
     chooseFolder: chooseFolder,
     loadFallbackFiles: loadFallbackFiles,
     refreshFolder: refreshFolder,
+    clearFolder: clearFolder,
+    supportsFolderPicker: supportsFolderPicker,
     getFile: getFile,
     saveBlobToFolder: saveBlobToFolder,
     deliverExportBlob: deliverExportBlob,

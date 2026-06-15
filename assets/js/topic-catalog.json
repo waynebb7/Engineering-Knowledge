@@ -696,132 +696,22 @@
           ]
         },
         {
-          "title": "Foundations",
+          "title": "Practice tools",
           "topics": [
             {
-              "id": "learn/mathematics/digital-logic/digital_math_classification.html",
-              "title": "Digital Math Classification",
-              "href": "learn/mathematics/digital-logic/digital_math_classification.html"
+              "id": "calculators/logic/truth-table.html",
+              "title": "Logic truth table generator",
+              "href": "calculators/logic/truth-table.html"
             },
             {
-              "id": "learn/mathematics/digital-logic/number-systems.html",
-              "title": "Number Systems and Conversions",
-              "href": "learn/mathematics/digital-logic/number-systems.html"
+              "id": "calculators/converters/binary-decimal-hex.html",
+              "title": "Binary / decimal / hex converter",
+              "href": "calculators/converters/binary-decimal-hex.html"
             },
             {
-              "id": "learn/mathematics/digital-logic/binary-arithmetic.html",
-              "title": "Binary Arithmetic",
-              "href": "learn/mathematics/digital-logic/binary-arithmetic.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/boolean-algebra.html",
-              "title": "Boolean Algebra",
-              "href": "learn/mathematics/digital-logic/boolean-algebra.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/truth-tables.html",
-              "title": "Truth Tables",
-              "href": "learn/mathematics/digital-logic/truth-tables.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/de-morgans-theorems.html",
-              "title": "De Morgan's Theorems",
-              "href": "learn/mathematics/digital-logic/de-morgans-theorems.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/logic-gates.html",
-              "title": "Logic Gates",
-              "href": "learn/mathematics/digital-logic/logic-gates.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/gray-code.html",
-              "title": "Gray Code",
-              "href": "learn/mathematics/digital-logic/gray-code.html"
-            }
-          ]
-        },
-        {
-          "title": "Formal logic",
-          "topics": [
-            {
-              "id": "learn/mathematics/digital-logic/propositional-logic.html",
-              "title": "Propositional Logic",
-              "href": "learn/mathematics/digital-logic/propositional-logic.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/predicate-logic.html",
-              "title": "Predicate Logic",
-              "href": "learn/mathematics/digital-logic/predicate-logic.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/set-theory-basics.html",
-              "title": "Set Theory Basics",
-              "href": "learn/mathematics/digital-logic/set-theory-basics.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/truth-functional-completeness.html",
-              "title": "Truth Functional Completeness",
-              "href": "learn/mathematics/digital-logic/truth-functional-completeness.html"
-            }
-          ]
-        },
-        {
-          "title": "Combinational design",
-          "topics": [
-            {
-              "id": "learn/mathematics/digital-logic/combinational-logic.html",
-              "title": "Combinational Logic",
-              "href": "learn/mathematics/digital-logic/combinational-logic.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/karnaugh-mapping.html",
-              "title": "Karnaugh Mapping",
-              "href": "learn/mathematics/digital-logic/karnaugh-mapping.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/quine-mccluskey.html",
-              "title": "Quine\u2013McCluskey Method",
-              "href": "learn/mathematics/digital-logic/quine-mccluskey.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/multiplexers.html",
-              "title": "Multiplexers",
-              "href": "learn/mathematics/digital-logic/multiplexers.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/demultiplexers.html",
-              "title": "Demultiplexers",
-              "href": "learn/mathematics/digital-logic/demultiplexers.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/encoders.html",
-              "title": "Encoders",
-              "href": "learn/mathematics/digital-logic/encoders.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/decoders.html",
-              "title": "Decoders",
-              "href": "learn/mathematics/digital-logic/decoders.html"
-            }
-          ]
-        },
-        {
-          "title": "Sequential systems",
-          "topics": [
-            {
-              "id": "learn/mathematics/digital-logic/sequential-logic.html",
-              "title": "Sequential Logic",
-              "href": "learn/mathematics/digital-logic/sequential-logic.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/finite-state-machines.html",
-              "title": "Finite State Machines (FSMs)",
-              "href": "learn/mathematics/digital-logic/finite-state-machines.html"
-            },
-            {
-              "id": "learn/mathematics/digital-logic/circuit-complexity.html",
-              "title": "Circuit Complexity",
-              "href": "learn/mathematics/digital-logic/circuit-complexity.html"
+              "id": "calculators/converters/twos-complement.html",
+              "title": "2&rsquo;s complement converter",
+              "href": "calculators/converters/twos-complement.html"
             }
           ]
         }

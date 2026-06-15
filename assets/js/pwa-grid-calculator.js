@@ -729,6 +729,59 @@
     });
   }
 
+  function applyExternalWireType(wireType) {
+    if (!wireType) {
+      return false;
+    }
+    var form = document.getElementById('pwa-params-form');
+    if (!form || !form.elements.wireType) {
+      return false;
+    }
+    var selectEl = form.elements.wireType;
+    var i;
+    var found = false;
+    for (i = 0; i < selectEl.options.length; i += 1) {
+      if (selectEl.options[i].value === wireType.id) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      var opt = document.createElement('option');
+      opt.value = wireType.id;
+      opt.textContent = wireType.label + ' (external)';
+      opt.setAttribute('data-external-wire', '1');
+      selectEl.appendChild(opt);
+    }
+    selectEl.value = wireType.id;
+    currentWireTypeId = wireType.id;
+    WIRE_TYPE_LABEL = wireType.label;
+    WIRES = PwaWireCatalog.getWireRows(wireType.id);
+    updateWireSpecLink(wireType.id);
+    syncConductorTempRatingForWireType(form, wireType.id);
+    updateGridTitle();
+    recalc();
+    return true;
+  }
+
+  function removeExternalWireOptions() {
+    var form = document.getElementById('pwa-params-form');
+    if (!form || !form.elements.wireType) {
+      return;
+    }
+    var selectEl = form.elements.wireType;
+    var toRemove = [];
+    var i;
+    for (i = 0; i < selectEl.options.length; i += 1) {
+      if (selectEl.options[i].getAttribute('data-external-wire') === '1') {
+        toRemove.push(selectEl.options[i]);
+      }
+    }
+    toRemove.forEach(function (opt) {
+      selectEl.removeChild(opt);
+    });
+  }
+
   function applyWireType(wireTypeId) {
     if (!window.PwaWireCatalog) return false;
 
@@ -748,7 +801,14 @@
     var wireType = PwaWireCatalog.getWireType(wireTypeId);
     if (!wireType) return;
 
-    linkEl.href = wireType.specPage;
+    linkEl.href = wireType.specPage || '#';
+    if (!wireType.specPage) {
+      linkEl.setAttribute('aria-disabled', 'true');
+      linkEl.classList.add('pwa-params__spec-link--disabled');
+    } else {
+      linkEl.removeAttribute('aria-disabled');
+      linkEl.classList.remove('pwa-params__spec-link--disabled');
+    }
     linkEl.setAttribute('aria-label', wireType.label + ' specification');
   }
 
@@ -952,6 +1012,42 @@
 
   function getVisibleGridColumns(allColumns) {
     return filterExportColumns(allColumns || lastGridColumns, getSelectedAwgLabels());
+  }
+
+  function getAdvancedTcVoltageDropColumn() {
+    var visible = getVisibleGridColumns(lastGridColumns);
+    if (!visible.length) {
+      return null;
+    }
+    if (visible.length === 1) {
+      return visible[0];
+    }
+
+    var worst = null;
+    var i;
+    for (i = 0; i < visible.length; i += 1) {
+      var col = visible[i];
+      if (typeof col.Vdrop !== 'number' || !isFinite(col.Vdrop)) {
+        continue;
+      }
+      if (!worst || col.Vdrop > worst.Vdrop) {
+        worst = col;
+      }
+    }
+
+    if (!worst) {
+      for (i = 0; i < visible.length; i += 1) {
+        var t2Col = visible[i];
+        if (typeof t2Col.T2 !== 'number' || !isFinite(t2Col.T2)) {
+          continue;
+        }
+        if (!worst || t2Col.T2 > worst.T2) {
+          worst = t2Col;
+        }
+      }
+    }
+
+    return worst || visible[0];
   }
 
   function findWire(awgLabel) {
@@ -1354,7 +1450,8 @@
       bundleLoadingPct: form.elements.bundleLoadingPct.value,
       wireLength: form.elements.wireLength.value,
       wireLengthUnit: form.elements.wireLengthUnit.value,
-      routingPct: form.elements.routingPct.value
+      routingPct: form.elements.routingPct.value,
+      wireDataAudit: global.PwaWireDataLoader ? PwaWireDataLoader.getAuditInfo() : null
     };
   }
 
@@ -1718,6 +1815,7 @@
         confidenceRating: window.PwaConfidenceRating ? PwaConfidenceRating.getExportData() : null,
         validationLibrary: window.PwaValidationLibrary ? PwaValidationLibrary.getExportData() : null,
         advancedTcVoltageDrop: window.PwaAdvancedTcVoltageDrop ? PwaAdvancedTcVoltageDrop.getExportData() : null,
+        wireDataAudit: global.PwaWireDataLoader ? PwaWireDataLoader.getAuditInfo() : null,
         filename: PwaWorkbook.buildExportFilename(snapshot, {
           awgLabels: settings.awgLabels,
           extension: 'xlsx',
@@ -1788,7 +1886,8 @@
         standardsTraceability: window.PwaStandardsTraceability ? PwaStandardsTraceability.getExportData() : null,
         confidenceRating: window.PwaConfidenceRating ? PwaConfidenceRating.getExportData() : null,
         validationLibrary: window.PwaValidationLibrary ? PwaValidationLibrary.getExportData() : null,
-        advancedTcVoltageDrop: window.PwaAdvancedTcVoltageDrop ? PwaAdvancedTcVoltageDrop.getExportData() : null
+        advancedTcVoltageDrop: window.PwaAdvancedTcVoltageDrop ? PwaAdvancedTcVoltageDrop.getExportData() : null,
+        wireDataAudit: global.PwaWireDataLoader ? PwaWireDataLoader.getAuditInfo() : null
       }], {
         wireId: wireNumber,
         wireNumber: wireNumber,
@@ -2143,6 +2242,10 @@
       refreshBtn.title = state.canWrite
         ? 'Rescan the connected folder for new or changed workbooks.'
         : 'Refresh only works after Choose folder in Chrome or Edge.';
+    }
+
+    if (window.PwaWorkflowPanel) {
+      PwaWorkflowPanel.updateDataSourceUi();
     }
   }
 
@@ -2831,6 +2934,10 @@
     updateGridTitle();
     initExportControls();
     initProjectFolder();
+    if (window.PwaWorkflowPanel) {
+      PwaWorkflowPanel.updateBrowserCompatStatus();
+      PwaWorkflowPanel.updateDataSourceUi();
+    }
     initAllowableDropControls(form);
     initGeneratorLineVoltageControls(form);
     initConductorTempRatingControls(form);
@@ -2893,19 +3000,27 @@
     GLOBAL_DISCLAIMER: PWA_GLOBAL_DISCLAIMER,
     GUIDANCE_PRESET_DISCLAIMER: GUIDANCE_PRESET_DISCLAIMER,
     triggerRecalc: recalc,
+    applyWireType: applyWireType,
+    applyExternalWireType: applyExternalWireType,
+    removeExternalWireOptions: removeExternalWireOptions,
+    setExportStatus: setExportStatus,
+    renderProjectFileList: renderProjectFileList,
+    getSelectedAwgLabels: getSelectedAwgLabels,
+    getAdvancedTcVoltageDropColumn: getAdvancedTcVoltageDropColumn,
     getConfidenceSnapshot: function () {
       var form = document.getElementById('pwa-params-form');
       if (!form) {
         return null;
       }
       var params = readParams(form);
-      var assessment = buildInstallationAssessment(params, lastGridColumns);
+      var visibleColumns = getVisibleGridColumns(lastGridColumns);
+      var assessment = buildInstallationAssessment(params, visibleColumns);
       var worstColumn = null;
       var i;
-      if (assessment && lastGridColumns.length) {
-        for (i = 0; i < lastGridColumns.length; i += 1) {
-          if (lastGridColumns[i].awg === assessment.worstAwg) {
-            worstColumn = lastGridColumns[i];
+      if (assessment && visibleColumns.length) {
+        for (i = 0; i < visibleColumns.length; i += 1) {
+          if (visibleColumns[i].awg === assessment.worstAwg) {
+            worstColumn = visibleColumns[i];
             break;
           }
         }
