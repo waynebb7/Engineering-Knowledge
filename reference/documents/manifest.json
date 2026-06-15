@@ -467,6 +467,92 @@
       ]
     },
     {
+      "id": "easa-cs-23-official",
+      "group": "easa-official",
+      "title": "EASA CS-23 — Certification Specifications (Normal-Category Aeroplanes)",
+      "type": "pdf",
+      "standard": "EASA CS-23",
+      "pickerLabel": "edition",
+      "summary": "Official EASA Certification Specification CS-23 publications for normal-category aeroplanes, including CS amendments and AMC/GM issues (official ED Decision annexes, not Easy Access Rules).",
+      "sections": [
+        "CS-23 certification specifications",
+        "Acceptable means of compliance",
+        "Official amendment publications",
+        "AMC/GM issues"
+      ],
+      "tags": [
+        "aerospace",
+        "certification",
+        "airworthiness",
+        "EASA",
+        "CS-23",
+        "aeroplanes",
+        "official"
+      ],
+      "versions": [
+        {
+          "id": "easa-cs-23-official-amd1",
+          "label": "Amendment 1",
+          "revision": "Amendment 1",
+          "file": "files/easa-cs-23-official-amendment-01.pdf"
+        },
+        {
+          "id": "easa-cs-23-official-amd2-corr",
+          "label": "Amendment 2 (corrigendum)",
+          "revision": "Amendment 2 (corrigendum)",
+          "file": "files/easa-cs-23-official-amendment-02-corrigendum.pdf"
+        },
+        {
+          "id": "easa-cs-23-official-amd3",
+          "label": "Amendment 3",
+          "revision": "Amendment 3",
+          "file": "files/easa-cs-23-official-amendment-03.pdf"
+        },
+        {
+          "id": "easa-cs-23-official-amd4",
+          "label": "Amendment 4",
+          "revision": "Amendment 4",
+          "file": "files/easa-cs-23-official-amendment-04.pdf"
+        },
+        {
+          "id": "easa-cs-23-official-amd5",
+          "label": "Amendment 5",
+          "revision": "Amendment 5",
+          "file": "files/easa-cs-23-official-amendment-05.pdf"
+        },
+        {
+          "id": "easa-cs-23-official-amd5-amc1",
+          "label": "Amendment 5 — AMC/GM Issue 1",
+          "revision": "Amendment 5 — AMC/GM Issue 1",
+          "file": "files/easa-cs-23-official-amendment-05-amc-gm-issue-01.pdf"
+        },
+        {
+          "id": "easa-cs-23-official-amd5-amc2",
+          "label": "Amendment 5 — AMC/GM Issue 2",
+          "revision": "Amendment 5 — AMC/GM Issue 2",
+          "file": "files/easa-cs-23-official-amendment-05-amc-gm-issue-02.pdf"
+        },
+        {
+          "id": "easa-cs-23-official-amd5-amc3",
+          "label": "Amendment 5 — AMC/GM Issue 3",
+          "revision": "Amendment 5 — AMC/GM Issue 3",
+          "file": "files/easa-cs-23-official-amendment-05-amc-gm-issue-03.pdf"
+        },
+        {
+          "id": "easa-cs-23-official-amd6-amc4",
+          "label": "Amendment 6 — AMC/GM Issue 4",
+          "revision": "Amendment 6 — AMC/GM Issue 4",
+          "file": "files/easa-cs-23-official-amendment-06-amc-gm-issue-04.pdf"
+        },
+        {
+          "id": "easa-cs-23-official-amd6-amc5",
+          "label": "Amendment 6 — AMC/GM Issue 5",
+          "revision": "Amendment 6 — AMC/GM Issue 5",
+          "file": "files/easa-cs-23-official-amendment-06-amc-gm-issue-05.pdf"
+        }
+      ]
+    },
+    {
       "id": "easa-cs-25-easy-access",
       "group": "easa-easy-access",
       "title": "EASA CS-25 — Easy Access Rules (Large Aeroplanes)",
