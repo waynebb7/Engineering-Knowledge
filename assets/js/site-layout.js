@@ -74,8 +74,8 @@
   header.innerHTML =
     '<div class="site-header__inner">' +
       '<a href="' + base + 'index.html" class="site-brand" aria-label="' + siteName + '">' +
-        '<img class="site-brand__logo site-brand__logo--full" src="' + logoFull + '" width="241" height="60" alt="' + siteName + '" decoding="async" />' +
-        '<img class="site-brand__logo site-brand__logo--compact" src="' + logoMark + '" width="50" height="36" alt="" decoding="async" />' +
+        '<img class="site-brand__logo site-brand__logo--full" src="' + logoFull + '" width="232" height="58" alt="' + siteName + '" decoding="async" />' +
+        '<img class="site-brand__logo site-brand__logo--compact" src="' + logoMark + '" width="62" height="44" alt="" decoding="async" />' +
       '</a>' +
       '<nav class="site-nav" aria-label="Main navigation">' + navHtml + '</nav>' +
     '</div>';

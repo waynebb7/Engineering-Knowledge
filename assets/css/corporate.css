@@ -17,7 +17,7 @@
   --corp-shadow-lg: 0 4px 6px rgba(15, 41, 66, 0.06), 0 12px 28px rgba(15, 41, 66, 0.1);
   --corp-radius: 8px;
   --corp-radius-lg: 12px;
-  --corp-header-height: 64px;
+  --corp-header-height: 80px;
   --corp-max-width: 1200px;
   --corp-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -84,14 +84,14 @@ body.has-site-chrome {
   display: block;
   width: auto;
   height: auto;
-  max-height: 40px;
-  max-width: min(240px, 42vw);
+  max-height: 58px;
+  max-width: min(360px, 52vw);
 }
 
 .site-brand__logo--compact {
   display: none;
-  max-height: 36px;
-  max-width: 52px;
+  max-height: 44px;
+  max-width: 64px;
 }
 
 .site-brand__mark {
@@ -156,8 +156,8 @@ body.has-site-chrome {
 
 @media (max-width: 1080px) {
   .site-brand__logo--full {
-    max-height: 34px;
-    max-width: min(200px, 38vw);
+    max-height: 50px;
+    max-width: min(300px, 48vw);
   }
 
   .site-nav a {
@@ -166,7 +166,7 @@ body.has-site-chrome {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 520px) {
   .site-brand__logo--full {
     display: none;
   }
