@@ -6,6 +6,32 @@
   var FT_TO_M = 0.3048;
   var IN_TO_M = 0.0254;
 
+  function lengthToInches(value, unit) {
+    if (unit === 'm') {
+      return value / IN_TO_M;
+    }
+    if (unit === 'ft') {
+      return value * 12;
+    }
+    return value;
+  }
+
+  function inchesToLength(inches, unit) {
+    if (unit === 'm') {
+      return inches * IN_TO_M;
+    }
+    if (unit === 'ft') {
+      return inches / 12;
+    }
+    return inches;
+  }
+
+  function formatLengthForUnit(value, unit) {
+    var digits = unit === 'm' ? 4 : (unit === 'ft' ? 3 : 2);
+    var factor = Math.pow(10, digits);
+    return String(Math.round(value * factor) / factor);
+  }
+
   var WIRE_TYPE_LABEL = '';
   var currentWireTypeId = 'kp260';
   var lastGridColumns = [];
@@ -867,7 +893,7 @@
     var routingPct = f('routingPct');
     var wireLength = f('wireLength');
     var unit = form.elements.wireLengthUnit.value;
-    var baseIn = unit === 'm' ? wireLength / IN_TO_M : wireLength;
+    var baseIn = lengthToInches(wireLength, unit);
     var totalIn = baseIn * (1 + routingPct / 100);
     var wireLengthFt = totalIn / 12;
 
@@ -2965,11 +2991,8 @@
         var val = parseFloat(lengthEl.value, 10);
         var newUnit = unitEl.value;
         if (isFinite(val) && lastUnit !== newUnit) {
-          if (lastUnit === 'in' && newUnit === 'm') {
-            lengthEl.value = String(Math.round(val * IN_TO_M * 10000) / 10000);
-          } else if (lastUnit === 'm' && newUnit === 'in') {
-            lengthEl.value = String(Math.round(val / IN_TO_M * 100) / 100);
-          }
+          var inches = lengthToInches(val, lastUnit);
+          lengthEl.value = formatLengthForUnit(inchesToLength(inches, newUnit), newUnit);
         }
         lastUnit = newUnit;
       });

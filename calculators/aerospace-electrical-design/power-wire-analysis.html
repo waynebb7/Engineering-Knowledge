@@ -30,7 +30,7 @@
   <script src="../../assets/js/pwa-confidence-rating.js?v=1.0.2" defer></script>
   <script src="../../assets/js/pwa-validation-library.js?v=1.0.1" defer></script>
   <script src="../../assets/js/pwa-advanced-tc-vdrop.js?v=1.0.1" defer></script>
-  <script src="../../assets/js/pwa-grid-calculator.js?v=2.0.8" defer></script>
+  <script src="../../assets/js/pwa-grid-calculator.js?v=2.0.9" defer></script>
   <script type="text/javascript" async
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
   <title>Power Wire Analysis | Engineering Knowledge</title>
@@ -55,17 +55,86 @@
       Calculations use internal built-in wire specification data.
     </p>
 
-    <details class="pwa-workflow pwa-export" id="pwa-workflow" open>
-      <summary class="pwa-workflow__summary pwa-export__summary">Project Folder, Wire Data &amp; Reports</summary>
+    <details class="pwa-workflow pwa-export" id="pwa-workflow-folder">
+      <summary class="pwa-workflow__summary pwa-export__summary">Project Folder</summary>
       <div class="pwa-workflow__body pwa-export__body">
         <p class="pwa-workflow__intro">
-          Start here: choose wire data source, connect your project folder where supported, load controlled wire specifications,
-          then export or import wire workbooks. Nothing is uploaded to this website.
+          Connect your project folder where supported, then browse and open wire workbooks.
+          Nothing is uploaded to this website.
+        </p>
+        <p class="pwa-export__hint" id="pwa-folder-api-note">
+          Browser folder access is limited by security policy. Permission is requested per session; this site does not retain unrestricted disk access.
+        </p>
+        <div class="pwa-workflow__status-row">
+          <p><strong>Folder access:</strong> <span id="pwa-folder-access-status">Not connected</span></p>
+        </div>
+        <p class="pwa-folder__step-title">Connect your project folder</p>
+        <div class="pwa-folder__connect" id="pwa-folder-connect">
+          <div class="pwa-folder__option" id="pwa-folder-option-picker">
+            <p class="pwa-folder__option-badge" id="pwa-folder-picker-badge">Recommended in Chrome / Edge</p>
+            <h4 class="pwa-folder__option-title">Select project folder</h4>
+            <p class="pwa-folder__option-desc">Read wire workbooks and write exports when write permission is granted.</p>
+            <button type="button" class="btn pwa-folder__btn" id="pwa-folder-choose">Select project folder</button>
+          </div>
+          <p class="pwa-folder__or" aria-hidden="true"><span>or</span></p>
+          <div class="pwa-folder__option" id="pwa-folder-option-upload">
+            <p class="pwa-folder__option-badge pwa-folder__option-badge--alt" id="pwa-folder-upload-badge">Fallback</p>
+            <h4 class="pwa-folder__option-title">Load folder snapshot</h4>
+            <p class="pwa-folder__option-desc">One-time read-only snapshot for browsers without folder API.</p>
+            <label class="btn pwa-folder__btn pwa-folder__btn--secondary">
+              Load folder
+              <input type="file" id="pwa-folder-fallback" webkitdirectory directory multiple hidden>
+            </label>
+          </div>
+        </div>
+        <div class="pwa-folder__status">
+          <div class="pwa-folder__status-text">
+            <p class="pwa-folder__path" id="pwa-folder-path">No folder connected yet.</p>
+            <p class="pwa-folder__status-detail" id="pwa-folder-status-detail">Pick an option above to list wire workbooks from your project folder.</p>
+          </div>
+          <div class="pwa-folder__status-actions">
+            <button type="button" class="btn pwa-folder__btn pwa-folder__btn--refresh" id="pwa-folder-refresh" disabled>Refresh</button>
+            <button type="button" class="btn pwa-folder__btn pwa-folder__btn--secondary" id="pwa-folder-clear">Clear project folder</button>
+          </div>
+        </div>
+        <p class="pwa-folder__step-title">Open a wire workbook</p>
+        <div class="pwa-folder__list-panel">
+          <div class="pwa-folder__filter">
+            <label class="pwa-folder__filter-label" for="pwa-folder-filter">Filter workbooks</label>
+            <div class="pwa-folder__filter-row">
+              <input type="search" class="pwa-folder__filter-input" id="pwa-folder-filter" placeholder="Wire number, project number, or filename…" autocomplete="off" enterkeyhint="search">
+              <button type="button" class="btn pwa-folder__btn pwa-folder__btn--secondary pwa-folder__filter-clear" id="pwa-folder-filter-clear" hidden>Clear</button>
+            </div>
+            <p class="pwa-folder__list-summary" id="pwa-folder-list-summary" aria-live="polite"></p>
+          </div>
+          <div class="pwa-folder__table-scroll" id="pwa-folder-table-scroll">
+            <table class="pwa-folder__table">
+              <thead>
+                <tr>
+                  <th scope="col">Wire</th>
+                  <th scope="col">Workbook</th>
+                  <th scope="col"><span class="visually-hidden">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="pwa-folder-files">
+                <tr><td colspan="3" class="pwa-folder__empty">Connect a folder above to list wire workbooks here.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="pwa-workflow pwa-export" id="pwa-workflow-wire-data">
+      <summary class="pwa-workflow__summary pwa-export__summary">Wire Data</summary>
+      <div class="pwa-workflow__body pwa-export__body">
+        <p class="pwa-workflow__intro">
+          Choose internal built-in specifications or load controlled external spreadsheets.
           <a href="../../reference/wire-data/index.html">Wire specification templates</a>
         </p>
 
         <section class="pwa-workflow__section" aria-labelledby="pwa-workflow-data-source-heading">
-          <h2 class="pwa-workflow__heading" id="pwa-workflow-data-source-heading">A. Data source selection</h2>
+          <h2 class="pwa-workflow__heading" id="pwa-workflow-data-source-heading">Data source selection</h2>
           <div class="pwa-workflow__source-control" role="radiogroup" aria-label="Wire data source">
             <label class="pwa-workflow__source-option">
               <input type="radio" name="pwaDataSource" id="pwa-data-source-internal" value="internal" checked>
@@ -84,72 +153,8 @@
           <p class="pwa-workflow__compat" id="pwa-browser-compat-status" aria-live="polite"></p>
         </section>
 
-        <section class="pwa-workflow__section pwa-export__section pwa-export__section--folder" aria-labelledby="pwa-workflow-folder-heading">
-          <h2 class="pwa-workflow__heading pwa-export__heading" id="pwa-workflow-folder-heading">B. Project folder selection</h2>
-          <p class="pwa-export__hint" id="pwa-folder-api-note">
-            Browser folder access is limited by security policy. Permission is requested per session; this site does not retain unrestricted disk access.
-          </p>
-          <div class="pwa-workflow__status-row">
-            <p><strong>Folder access:</strong> <span id="pwa-folder-access-status">Not connected</span></p>
-          </div>
-          <p class="pwa-folder__step-title">Connect your project folder</p>
-          <div class="pwa-folder__connect" id="pwa-folder-connect">
-            <div class="pwa-folder__option" id="pwa-folder-option-picker">
-              <p class="pwa-folder__option-badge" id="pwa-folder-picker-badge">Recommended in Chrome / Edge</p>
-              <h4 class="pwa-folder__option-title">Select project folder</h4>
-              <p class="pwa-folder__option-desc">Read wire workbooks and write exports when write permission is granted.</p>
-              <button type="button" class="btn pwa-folder__btn" id="pwa-folder-choose">Select project folder</button>
-            </div>
-            <p class="pwa-folder__or" aria-hidden="true"><span>or</span></p>
-            <div class="pwa-folder__option" id="pwa-folder-option-upload">
-              <p class="pwa-folder__option-badge pwa-folder__option-badge--alt" id="pwa-folder-upload-badge">Fallback</p>
-              <h4 class="pwa-folder__option-title">Load folder snapshot</h4>
-              <p class="pwa-folder__option-desc">One-time read-only snapshot for browsers without folder API.</p>
-              <label class="btn pwa-folder__btn pwa-folder__btn--secondary">
-                Load folder
-                <input type="file" id="pwa-folder-fallback" webkitdirectory directory multiple hidden>
-              </label>
-            </div>
-          </div>
-          <div class="pwa-folder__status">
-            <div class="pwa-folder__status-text">
-              <p class="pwa-folder__path" id="pwa-folder-path">No folder connected yet.</p>
-              <p class="pwa-folder__status-detail" id="pwa-folder-status-detail">Pick an option above to list wire workbooks from your project folder.</p>
-            </div>
-            <div class="pwa-folder__status-actions">
-              <button type="button" class="btn pwa-folder__btn pwa-folder__btn--refresh" id="pwa-folder-refresh" disabled>Refresh</button>
-              <button type="button" class="btn pwa-folder__btn pwa-folder__btn--secondary" id="pwa-folder-clear">Clear project folder</button>
-            </div>
-          </div>
-          <p class="pwa-folder__step-title">Open a wire workbook</p>
-          <div class="pwa-folder__list-panel">
-            <div class="pwa-folder__filter">
-              <label class="pwa-folder__filter-label" for="pwa-folder-filter">Filter workbooks</label>
-              <div class="pwa-folder__filter-row">
-                <input type="search" class="pwa-folder__filter-input" id="pwa-folder-filter" placeholder="Wire number, project number, or filename…" autocomplete="off" enterkeyhint="search">
-                <button type="button" class="btn pwa-folder__btn pwa-folder__btn--secondary pwa-folder__filter-clear" id="pwa-folder-filter-clear" hidden>Clear</button>
-              </div>
-              <p class="pwa-folder__list-summary" id="pwa-folder-list-summary" aria-live="polite"></p>
-            </div>
-            <div class="pwa-folder__table-scroll" id="pwa-folder-table-scroll">
-              <table class="pwa-folder__table">
-                <thead>
-                  <tr>
-                    <th scope="col">Wire</th>
-                    <th scope="col">Workbook</th>
-                    <th scope="col"><span class="visually-hidden">Actions</span></th>
-                  </tr>
-                </thead>
-                <tbody id="pwa-folder-files">
-                  <tr><td colspan="3" class="pwa-folder__empty">Connect a folder above to list wire workbooks here.</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
         <section class="pwa-workflow__section" id="pwa-workflow-external-wire" hidden aria-labelledby="pwa-workflow-wire-data-heading">
-          <h2 class="pwa-workflow__heading" id="pwa-workflow-wire-data-heading">C. External wire data loading</h2>
+          <h2 class="pwa-workflow__heading" id="pwa-workflow-wire-data-heading">External wire data loading</h2>
           <p class="pwa-export__hint">
             Download blank templates from the <a href="../../reference/wire-data/index.html">Wire Data Templates</a> page.
             Populate, version-control externally, then load here. Set <code>DATA_LOCKED</code> to <code>YES</code> when formally approved (optional for loading).
@@ -171,59 +176,64 @@
           <div class="pwa-workflow__messages" id="pwa-wire-data-errors" hidden role="alert"></div>
           <div class="pwa-workflow__messages pwa-workflow__messages--warn" id="pwa-wire-data-warnings" hidden role="note"></div>
         </section>
+      </div>
+    </details>
 
-        <section class="pwa-workflow__section" aria-labelledby="pwa-workflow-reports-heading">
-          <h2 class="pwa-workflow__heading pwa-export__heading" id="pwa-workflow-reports-heading">D. Reports</h2>
-          <div class="pwa-export__ident-row">
-            <label class="pwa-export__project pwa-export__project-number">Project number
-              <input type="text" id="pwa-project-number" name="projectNumber" placeholder="e.g. 06167" autocomplete="off" inputmode="numeric">
-            </label>
-            <label class="pwa-export__project">Project / system name
-              <input type="text" id="pwa-project-name" name="projectName" placeholder="e.g. Flight control system">
-            </label>
-            <label class="pwa-export__project pwa-export__wire-number">Wire number
-              <input type="text" id="pwa-wire-number" name="wireNumber" placeholder="e.g. 9001" autocomplete="off">
-            </label>
-          </div>
-          <label class="pwa-export__filename-option">
-            <input type="checkbox" id="pwa-filename-include-timestamp" checked>
-            Include date and time in export filenames
+    <details class="pwa-workflow pwa-export" id="pwa-workflow-reports">
+      <summary class="pwa-workflow__summary pwa-export__summary">Reports</summary>
+      <div class="pwa-workflow__body pwa-export__body">
+        <p class="pwa-workflow__intro">
+          Export analysis results to Excel or Word, or import a saved workbook. Exports include wire data source audit fields.
+        </p>
+        <div class="pwa-export__ident-row">
+          <label class="pwa-export__project pwa-export__project-number">Project number
+            <input type="text" id="pwa-project-number" name="projectNumber" placeholder="e.g. 06167" autocomplete="off" inputmode="numeric">
           </label>
-          <p class="pwa-export__hint pwa-export__hint--filename">
-            Exports include wire data source audit fields. Folder write requires confirmation in supported browsers; otherwise files download normally.
-          </p>
-          <div class="pwa-export__section">
-            <h3 class="pwa-export__heading">Export to Excel</h3>
-            <div class="pwa-export__btn-row">
-              <button type="button" class="btn pwa-export__btn" id="pwa-export-excel-grid">Export analysis grid</button>
-              <button type="button" class="btn pwa-export__btn" id="pwa-export-excel-report">Export Excel report</button>
-            </div>
+          <label class="pwa-export__project">Project / system name
+            <input type="text" id="pwa-project-name" name="projectName" placeholder="e.g. Flight control system">
+          </label>
+          <label class="pwa-export__project pwa-export__wire-number">Wire number
+            <input type="text" id="pwa-wire-number" name="wireNumber" placeholder="e.g. 9001" autocomplete="off">
+          </label>
+        </div>
+        <label class="pwa-export__filename-option">
+          <input type="checkbox" id="pwa-filename-include-timestamp" checked>
+          Include date and time in export filenames
+        </label>
+        <p class="pwa-export__hint pwa-export__hint--filename">
+          Folder write requires confirmation in supported browsers; otherwise files download normally.
+        </p>
+        <div class="pwa-export__section">
+          <h3 class="pwa-export__heading">Export to Excel</h3>
+          <div class="pwa-export__btn-row">
+            <button type="button" class="btn pwa-export__btn" id="pwa-export-excel-grid">Export analysis grid</button>
+            <button type="button" class="btn pwa-export__btn" id="pwa-export-excel-report">Export Excel report</button>
           </div>
-          <div class="pwa-export__section">
-            <h3 class="pwa-export__heading">Export to Word</h3>
-            <div class="pwa-export__btn-row">
-              <button type="button" class="btn pwa-export__btn" id="pwa-export-word-report">Export Word report</button>
-              <button type="button" class="btn pwa-export__btn" id="pwa-export-word-project">Export Word project report</button>
-            </div>
+        </div>
+        <div class="pwa-export__section">
+          <h3 class="pwa-export__heading">Export to Word</h3>
+          <div class="pwa-export__btn-row">
+            <button type="button" class="btn pwa-export__btn" id="pwa-export-word-report">Export Word report</button>
+            <button type="button" class="btn pwa-export__btn" id="pwa-export-word-project">Export Word project report</button>
           </div>
-          <div class="pwa-export__section">
-            <h3 class="pwa-export__heading">Import from Excel</h3>
-            <div class="pwa-export__btn-row pwa-export__btn-row--import">
-              <label class="btn pwa-export__btn pwa-export__import-btn">
-                Import workbook
-                <input type="file" id="pwa-import-workbook" accept=".xlsx,.xls" hidden>
-              </label>
-            </div>
+        </div>
+        <div class="pwa-export__section">
+          <h3 class="pwa-export__heading">Import from Excel</h3>
+          <div class="pwa-export__btn-row pwa-export__btn-row--import">
+            <label class="btn pwa-export__btn pwa-export__import-btn">
+              Import workbook
+              <input type="file" id="pwa-import-workbook" accept=".xlsx,.xls" hidden>
+            </label>
           </div>
-          <p class="pwa-export__status" id="pwa-export-status" aria-live="polite"></p>
-          <details class="pwa-export__clipboard">
-            <summary>Copy to clipboard</summary>
-            <div class="pwa-export__btn-row pwa-export__btn-row--secondary">
-              <button type="button" class="btn pwa-export__btn pwa-export__btn-secondary" id="pwa-copy-table">Copy table</button>
-              <button type="button" class="btn pwa-export__btn pwa-export__btn-secondary" id="pwa-copy-table-formulas">Copy with formulas</button>
-            </div>
-          </details>
-        </section>
+        </div>
+        <p class="pwa-export__status" id="pwa-export-status" aria-live="polite"></p>
+        <details class="pwa-export__clipboard">
+          <summary>Copy to clipboard</summary>
+          <div class="pwa-export__btn-row pwa-export__btn-row--secondary">
+            <button type="button" class="btn pwa-export__btn pwa-export__btn-secondary" id="pwa-copy-table">Copy table</button>
+            <button type="button" class="btn pwa-export__btn pwa-export__btn-secondary" id="pwa-copy-table-formulas">Copy with formulas</button>
+          </div>
+        </details>
       </div>
     </details>
 
@@ -242,7 +252,7 @@
           <li>Set <strong>wire run length</strong> and routing allowance for the voltage-drop section at the bottom of the grid.</li>
           <li>Scroll the grid horizontally and find the smallest AWG where <strong>T<sub>2</sub> ≤ T<sub>SAFE</sub></strong> (green) and <strong>voltage drop ≤ U</strong> (green).</li>
           <li>Check <strong>L<sub>2</sub></strong> against your total run if length is the limiting factor.</li>
-          <li>Use <strong>Project Folder, Wire Data &amp; Reports</strong> (top panel) to connect your project folder, load controlled wire specifications, and export Excel or Word reports.</li>
+          <li>Use the <strong>Project Folder</strong>, <strong>Wire Data</strong>, and <strong>Reports</strong> panels at the top to connect your project folder, load controlled wire specifications, and export Excel or Word reports.</li>
         </ol>
 
         <h3 class="pwa-guide__subhead">Parameters panel (left)</h3>
@@ -635,6 +645,7 @@
                 <input type="number" name="wireLength" step="0.01" min="0" value="603.6" required>
                 <select name="wireLengthUnit" aria-label="Length unit for voltage drop run">
                   <option value="in" selected>Inches</option>
+                  <option value="ft">Feet</option>
                   <option value="m">Metres</option>
                 </select>
               </span>
