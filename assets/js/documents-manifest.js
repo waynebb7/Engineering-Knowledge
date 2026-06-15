@@ -17,7 +17,11 @@ window.DocumentManifest = {
       "title": "Wire & Cable — Manufacturer Data"
     },
     {
-      "id": "easa-certification",
+      "id": "easa-official",
+      "title": "EASA — Official Certification Specifications"
+    },
+    {
+      "id": "easa-easy-access",
       "title": "EASA — Easy Access Rules"
     }
   ],
@@ -271,8 +275,200 @@ window.DocumentManifest = {
       ]
     },
     {
+      "id": "easa-cs-25-official",
+      "group": "easa-official",
+      "title": "EASA CS-25 — Certification Specifications (Large Aeroplanes)",
+      "type": "pdf",
+      "standard": "EASA CS-25",
+      "pickerLabel": "edition",
+      "summary": "Official EASA Certification Specification CS-25 publications for large aeroplanes, from initial issue through successive amendments (official ED Decision annexes, not Easy Access Rules).",
+      "sections": [
+        "CS-25 certification specifications",
+        "Acceptable means of compliance",
+        "Official amendment publications"
+      ],
+      "tags": [
+        "aerospace",
+        "certification",
+        "airworthiness",
+        "EASA",
+        "CS-25",
+        "official"
+      ],
+      "versions": [
+        {
+          "id": "easa-cs-25-official-initial",
+          "label": "Initial issue",
+          "revision": "Initial issue",
+          "file": "files/easa-cs-25-official-initial-issue.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd2",
+          "label": "Amendment 2",
+          "revision": "Amendment 2",
+          "file": "files/easa-cs-25-official-amendment-02.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd3",
+          "label": "Amendment 3",
+          "revision": "Amendment 3",
+          "file": "files/easa-cs-25-official-amendment-03.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd4",
+          "label": "Amendment 4",
+          "revision": "Amendment 4",
+          "file": "files/easa-cs-25-official-amendment-04.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd5",
+          "label": "Amendment 5",
+          "revision": "Amendment 5",
+          "file": "files/easa-cs-25-official-amendment-05.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd6",
+          "label": "Amendment 6",
+          "revision": "Amendment 6",
+          "file": "files/easa-cs-25-official-amendment-06.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd7",
+          "label": "Amendment 7",
+          "revision": "Amendment 7",
+          "file": "files/easa-cs-25-official-amendment-07.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd8",
+          "label": "Amendment 8",
+          "revision": "Amendment 8",
+          "file": "files/easa-cs-25-official-amendment-08.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd9",
+          "label": "Amendment 9",
+          "revision": "Amendment 9",
+          "file": "files/easa-cs-25-official-amendment-09.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd10",
+          "label": "Amendment 10",
+          "revision": "Amendment 10",
+          "file": "files/easa-cs-25-official-amendment-10.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd11",
+          "label": "Amendment 11",
+          "revision": "Amendment 11",
+          "file": "files/easa-cs-25-official-amendment-11.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd12",
+          "label": "Amendment 12",
+          "revision": "Amendment 12",
+          "file": "files/easa-cs-25-official-amendment-12.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd13",
+          "label": "Amendment 13",
+          "revision": "Amendment 13",
+          "file": "files/easa-cs-25-official-amendment-13.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd14",
+          "label": "Amendment 14",
+          "revision": "Amendment 14",
+          "file": "files/easa-cs-25-official-amendment-14.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd15",
+          "label": "Amendment 15",
+          "revision": "Amendment 15",
+          "file": "files/easa-cs-25-official-amendment-15.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd16",
+          "label": "Amendment 16",
+          "revision": "Amendment 16",
+          "file": "files/easa-cs-25-official-amendment-16.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd17",
+          "label": "Amendment 17",
+          "revision": "Amendment 17",
+          "file": "files/easa-cs-25-official-amendment-17.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd18",
+          "label": "Amendment 18",
+          "revision": "Amendment 18",
+          "file": "files/easa-cs-25-official-amendment-18.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd19",
+          "label": "Amendment 19",
+          "revision": "Amendment 19",
+          "file": "files/easa-cs-25-official-amendment-19.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd20",
+          "label": "Amendment 20",
+          "revision": "Amendment 20",
+          "file": "files/easa-cs-25-official-amendment-20.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd21",
+          "label": "Amendment 21",
+          "revision": "Amendment 21",
+          "file": "files/easa-cs-25-official-amendment-21.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd22",
+          "label": "Amendment 22",
+          "revision": "Amendment 22",
+          "file": "files/easa-cs-25-official-amendment-22.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd23",
+          "label": "Amendment 23",
+          "revision": "Amendment 23",
+          "file": "files/easa-cs-25-official-amendment-23.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd24",
+          "label": "Amendment 24",
+          "revision": "Amendment 24",
+          "file": "files/easa-cs-25-official-amendment-24.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd25",
+          "label": "Amendment 25",
+          "revision": "Amendment 25",
+          "file": "files/easa-cs-25-official-amendment-25.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd26",
+          "label": "Amendment 26",
+          "revision": "Amendment 26",
+          "file": "files/easa-cs-25-official-amendment-26.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd27",
+          "label": "Amendment 27",
+          "revision": "Amendment 27",
+          "file": "files/easa-cs-25-official-amendment-27.pdf"
+        },
+        {
+          "id": "easa-cs-25-official-amd28",
+          "label": "Amendment 28",
+          "revision": "Amendment 28",
+          "file": "files/easa-cs-25-official-amendment-28.pdf"
+        }
+      ]
+    },
+    {
       "id": "easa-cs-25-easy-access",
-      "group": "easa-certification",
+      "group": "easa-easy-access",
       "title": "EASA CS-25 — Easy Access Rules (Large Aeroplanes)",
       "type": "pdf",
       "standard": "EASA CS-25",
@@ -462,7 +658,7 @@ window.DocumentManifest = {
     },
     {
       "id": "easa-cs-27-easy-access",
-      "group": "easa-certification",
+      "group": "easa-easy-access",
       "title": "EASA CS-27 — Easy Access Rules (Small Rotorcraft)",
       "type": "pdf",
       "standard": "EASA CS-27",
@@ -551,7 +747,7 @@ window.DocumentManifest = {
     },
     {
       "id": "easa-cs-29-easy-access",
-      "group": "easa-certification",
+      "group": "easa-easy-access",
       "title": "EASA CS-29 — Easy Access Rules (Large Rotorcraft)",
       "type": "pdf",
       "standard": "EASA CS-29",
@@ -652,7 +848,7 @@ window.DocumentManifest = {
     },
     {
       "id": "easa-cs-23-easy-access",
-      "group": "easa-certification",
+      "group": "easa-easy-access",
       "title": "EASA CS-23 — Easy Access Rules (Normal-Category Aeroplanes)",
       "type": "pdf",
       "standard": "EASA CS-23",
@@ -758,7 +954,7 @@ window.DocumentManifest = {
     },
     {
       "id": "easa-part-21-easy-access",
-      "group": "easa-certification",
+      "group": "easa-easy-access",
       "title": "EASA Part-21 — Easy Access Rules (Airworthiness and Environmental Certification)",
       "file": "files/easa-part-21-easy-access-rev-march-2023-corr-may-2023.pdf",
       "type": "pdf",
