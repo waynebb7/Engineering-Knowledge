@@ -13,6 +13,25 @@
   var file = parts[parts.length - 1] || 'index.html';
   if (!file.endsWith('.html')) file = 'index.html';
   var base = getBasePath();
+  var siteName = 'Aerospace Engineering Toolkit';
+  var logoFull = base + 'assets/images/aerospace-engineering-toolkit-logo.png';
+  var logoMark = base + 'assets/images/aet-logo-mark.png';
+  var favicon = base + 'assets/images/favicon.png';
+
+  if (!document.querySelector('link[rel="icon"]')) {
+    var iconLink = document.createElement('link');
+    iconLink.rel = 'icon';
+    iconLink.type = 'image/png';
+    iconLink.href = favicon;
+    document.head.appendChild(iconLink);
+  }
+
+  if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+    var touchLink = document.createElement('link');
+    touchLink.rel = 'apple-touch-icon';
+    touchLink.href = favicon;
+    document.head.appendChild(touchLink);
+  }
 
   var navItems = [
     { href: 'index.html', label: 'Home' },
@@ -54,12 +73,9 @@
   header.className = 'site-header';
   header.innerHTML =
     '<div class="site-header__inner">' +
-      '<a href="' + base + 'index.html" class="site-brand">' +
-        '<span class="site-brand__mark">EK</span>' +
-        '<span class="site-brand__text">' +
-          '<span class="site-brand__name">Engineering Knowledge</span>' +
-          '<span class="site-brand__tagline">Technical Reference &amp; Tools</span>' +
-        '</span>' +
+      '<a href="' + base + 'index.html" class="site-brand" aria-label="' + siteName + '">' +
+        '<img class="site-brand__logo site-brand__logo--full" src="' + logoFull + '" width="241" height="60" alt="' + siteName + '" decoding="async" />' +
+        '<img class="site-brand__logo site-brand__logo--compact" src="' + logoMark + '" width="50" height="36" alt="" decoding="async" />' +
       '</a>' +
       '<nav class="site-nav" aria-label="Main navigation">' + navHtml + '</nav>' +
     '</div>';
@@ -74,7 +90,12 @@
 
   function feedbackReportHref() {
     var page = currentPageReference();
-    var title = document.title.replace(/\s*\|\s*Engineering Knowledge\s*$/i, '').trim();
+    var title = document.title
+      .replace(/\s*\|\s*Engineering Knowledge\s*$/i, '')
+      .replace(/\s*[—–-]\s*Engineering Knowledge\s*$/i, '')
+      .replace(/\s*\|\s*Aerospace Engineering Toolkit\s*$/i, '')
+      .replace(/\s*[—–-]\s*Aerospace Engineering Toolkit\s*$/i, '')
+      .trim();
     return base + 'feedback.html?report=1&page=' + encodeURIComponent(page) +
       '&title=' + encodeURIComponent(title);
   }
@@ -90,7 +111,7 @@
   footer.className = 'site-footer';
   footer.innerHTML =
     '<div class="site-footer__inner">' +
-      '<p>&copy; ' + new Date().getFullYear() + ' Engineering Knowledge Hub &middot; ' +
+      '<p>&copy; ' + new Date().getFullYear() + ' ' + siteName + ' &middot; ' +
       footerLinks + '</p>' +
     '</div>';
 
