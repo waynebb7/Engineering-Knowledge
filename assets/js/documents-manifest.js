@@ -524,6 +524,24 @@ window.DocumentManifest = {
           "file": "files/easa-cs-27-easy-access-amendment-06.pdf"
         },
         {
+          "id": "easa_cs_27_easy_access_amendment_07",
+          "label": "Amendment 7",
+          "revision": "Amendment 7",
+          "file": "files/easa-cs-27-easy-access-amendment-07.pdf"
+        },
+        {
+          "id": "easa_cs_27_easy_access_amendment_08",
+          "label": "Amendment 8",
+          "revision": "Amendment 8",
+          "file": "files/easa-cs-27-easy-access-amendment-08.pdf"
+        },
+        {
+          "id": "easa_cs_27_easy_access_amendment_09",
+          "label": "Amendment 9",
+          "revision": "Amendment 9",
+          "file": "files/easa-cs-27-easy-access-amendment-09.pdf"
+        },
+        {
           "id": "easa_cs_27_easy_access_amendment_10",
           "label": "Amendment 10",
           "revision": "Amendment 10",
@@ -686,7 +704,7 @@ window.DocumentManifest = {
         },
         {
           "id": "easa_cs_23_easy_access_amendment_06_amc_gm_issue_05",
-          "label": "Amendment 6 — AMC/GM Issue 5 (May 2026)",
+          "label": "Amendment 6 — AMC/GM Issue 5",
           "revision": "Amendment 6 — AMC/GM Issue 5",
           "file": "files/easa-cs-23-easy-access-amendment-06-amc-gm-issue-05.pdf"
         }

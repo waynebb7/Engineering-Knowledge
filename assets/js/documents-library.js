@@ -28,9 +28,73 @@
     return TYPE_LABELS[type] || String(type || 'File').toUpperCase();
   }
 
-  function getVersions(doc) {
+  function versionSortRank(version) {
+    var label = (version && version.label ? version.label : '').trim();
+    var revision = (version && version.revision ? version.revision : '').trim();
+
+    if (/^initial issue/i.test(label)) {
+      return [0, 0, 0];
+    }
+
+    var amendmentMatch = label.match(/amendment\s+(\d+)/i);
+    if (amendmentMatch) {
+      var amendment = parseInt(amendmentMatch[1], 10);
+      var issueMatch = label.match(/issue\s+(\d+)/i);
+      var issue = issueMatch ? parseInt(issueMatch[1], 10) : 0;
+      return [2, amendment, issue];
+    }
+
+    var doMatch = label.match(/^DO-(\d+)([A-Z])?$/i);
+    if (doMatch) {
+      var doNum = parseInt(doMatch[1], 10);
+      var doLetter = doMatch[2] ? doMatch[2].charCodeAt(0) : 64;
+      return [3, doNum, doLetter];
+    }
+
+    var arpMatch = label.match(/^ARP(\d+)([A-Z])?$/i);
+    if (arpMatch) {
+      var arpNum = parseInt(arpMatch[1], 10);
+      var arpLetter = arpMatch[2] ? arpMatch[2].charCodeAt(0) : 64;
+      return [3, arpNum, arpLetter];
+    }
+
+    var revMatch = revision.match(/(?:Rev\.?|Ed\.?)\s*([A-Z])/i);
+    if (revMatch) {
+      return [1, revMatch[1].charCodeAt(0), 0];
+    }
+
+    return [1, 0, label.charCodeAt(0) || 0];
+  }
+
+  function compareSortRanks(a, b) {
+    var i;
+    for (i = 0; i < 3; i += 1) {
+      if (a[i] !== b[i]) {
+        return a[i] - b[i];
+      }
+    }
+    return 0;
+  }
+
+  function compareVersionsNewestFirst(a, b) {
+    return compareSortRanks(versionSortRank(b), versionSortRank(a));
+  }
+
+  function documentNewestRank(doc) {
+    var versions = getVersionsUnsorted(doc);
+    if (!versions.length) {
+      return [0, 0, 0];
+    }
+    return versions
+      .map(versionSortRank)
+      .reduce(function (best, rank) {
+        return compareSortRanks(rank, best) > 0 ? rank : best;
+      }, [0, 0, 0]);
+  }
+
+  function getVersionsUnsorted(doc) {
     if (doc.versions && doc.versions.length) {
-      return doc.versions;
+      return doc.versions.slice();
     }
     if (doc.file) {
       return [{
@@ -41,6 +105,10 @@
       }];
     }
     return [];
+  }
+
+  function getVersions(doc) {
+    return getVersionsUnsorted(doc).sort(compareVersionsNewestFirst);
   }
 
   function collectTags(docs) {
@@ -186,6 +254,14 @@
     docs.forEach(function (doc) {
       var id = doc.group && groupMap[doc.group] ? doc.group : 'ungrouped';
       groupMap[id].docs.push(doc);
+    });
+
+    order.forEach(function (id) {
+      if (groupMap[id]) {
+        groupMap[id].docs.sort(function (a, b) {
+          return compareSortRanks(documentNewestRank(b), documentNewestRank(a));
+        });
+      }
     });
 
     return order
