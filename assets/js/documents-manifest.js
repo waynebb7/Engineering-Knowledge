@@ -593,6 +593,42 @@ window.DocumentManifest = {
           "label": "Amendment 6",
           "revision": "Amendment 6",
           "file": "files/easa-cs-29-easy-access-amendment-06.pdf"
+        },
+        {
+          "id": "easa_cs_29_easy_access_amendment_07",
+          "label": "Amendment 7",
+          "revision": "Amendment 7",
+          "file": "files/easa-cs-29-easy-access-amendment-07.pdf"
+        },
+        {
+          "id": "easa_cs_29_easy_access_amendment_08",
+          "label": "Amendment 8",
+          "revision": "Amendment 8",
+          "file": "files/easa-cs-29-easy-access-amendment-08.pdf"
+        },
+        {
+          "id": "easa_cs_29_easy_access_amendment_09",
+          "label": "Amendment 9",
+          "revision": "Amendment 9",
+          "file": "files/easa-cs-29-easy-access-amendment-09.pdf"
+        },
+        {
+          "id": "easa_cs_29_easy_access_amendment_10",
+          "label": "Amendment 10",
+          "revision": "Amendment 10",
+          "file": "files/easa-cs-29-easy-access-amendment-10.pdf"
+        },
+        {
+          "id": "easa_cs_29_easy_access_amendment_11",
+          "label": "Amendment 11",
+          "revision": "Amendment 11",
+          "file": "files/easa-cs-29-easy-access-amendment-11.pdf"
+        },
+        {
+          "id": "easa_cs_29_easy_access_amendment_12",
+          "label": "Amendment 12",
+          "revision": "Amendment 12",
+          "file": "files/easa-cs-29-easy-access-amendment-12.pdf"
         }
       ]
     },
