@@ -18,7 +18,7 @@ window.DocumentManifest = {
     },
     {
       "id": "easa-certification",
-      "title": "EASA — Certification Specifications"
+      "title": "EASA — Easy Access Rules"
     }
   ],
   "documents": [
