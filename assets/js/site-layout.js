@@ -37,6 +37,7 @@
     { href: 'index.html', label: 'Home' },
     { href: 'calculators/index.html', label: 'Calculators' },
     { href: 'learn/index.html', label: 'Learn' },
+    { href: 'maps/knowledge-graph.html', label: 'Graph' },
     { href: 'reference/documents/index.html', label: 'Documents' },
     { href: 'progress.html', label: 'Progress' },
     { href: 'feedback.html', label: 'Feedback' }
@@ -147,6 +148,29 @@
   }
 
   if (body.classList.contains('content-page')) {
+    // Derive the lesson ID from the site root so subdirectory deployments work.
+    // This link does not load the graph or its data on existing lesson pages.
+    var sitePath = new URL(base || './', window.location.href).pathname;
+    var lessonHref = path.indexOf(sitePath) === 0 ? path.slice(sitePath.length) : '';
+    var lessonHero = document.querySelector('.content-hero');
+    if (/^learn\/[^/]+\/.+\.html$/.test(lessonHref) && file !== 'index.html' &&
+        !body.classList.contains('catalog-page') && lessonHero) {
+      var lessonNav = lessonHero.querySelector('.content-nav');
+      if (!lessonNav) {
+        lessonNav = document.createElement('div');
+        lessonNav.className = 'content-nav';
+        lessonHero.appendChild(lessonNav);
+      }
+      var graphLink = document.createElement('a');
+      graphLink.href = base + 'maps/knowledge-graph.html?node=' +
+        encodeURIComponent(lessonHref) + '&view=focus';
+      graphLink.textContent = 'View connections';
+      if (lessonNav.querySelector('a')) {
+        lessonNav.appendChild(document.createTextNode(' \u00b7 '));
+      }
+      lessonNav.appendChild(graphLink);
+    }
+
     var topicProgressScript = document.createElement('script');
     topicProgressScript.src = scriptSibling('topic-progress.js');
     document.head.appendChild(topicProgressScript);

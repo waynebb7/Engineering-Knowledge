@@ -38,6 +38,11 @@ jobs:
       - name: Validate Python scripts
         run: python3 -m compileall scripts
 
+      - name: Test knowledge graph
+        run: |
+          node --test scripts/test-knowledge-graph-model.js
+          python3 scripts/test-knowledge-graph.py
+
       - name: Verify generated artifacts are up to date
         run: |
           python3 scripts/build-topic-catalog.py
@@ -50,12 +55,14 @@ jobs:
           python3 scripts/extract-quiz-questions.py
           python3 scripts/build-quiz-answers.py
           python3 scripts/build-documents-manifest.py
+          python3 scripts/build-knowledge-graph.py
           git diff --exit-code -- \
             assets/js/topic-catalog.js \
             assets/js/topic-catalog.json \
             meta/tree.html \
             scripts/topic-progression.json \
             maps/prereq-node-pages.json \
+            maps/knowledge-graph.json \
             maps/math-prereq-map.html \
             maps/physics-prereq-map.html \
             maps/quantum-prereq-map.html \

@@ -35,6 +35,7 @@ python scripts/build-vscode-excludes.py
 - **40+ interactive calculators** — power, AC/three-phase, unit conversion, digital logic, physics, aerospace
 - **300+ teaching pages** — mathematics, physics, and quantum catalogs with quizzes and progress tracking
 - **Prerequisite maps** — interactive dependency graphs for math, physics, and quantum paths
+- **Knowledge graph** — a searchable network of lessons across subjects, with whole-network and focused topic views
 - **Engineering reference** — variables and equations with click-to-learn modals
 - **Shared assets** — `assets/css/corporate.css`, `assets/js/calculator-core.js`, `assets/js/site-layout.js`
 
@@ -48,6 +49,28 @@ python -m http.server 8080
 ```
 
 Open [http://localhost:8080/index.html](http://localhost:8080/index.html)
+
+## Knowledge graph
+
+Open **Graph** in the main navigation, the Knowledge Graph card on the Learn hub, or **View connections** on a lesson. The graph is an additional, read-only way to explore existing lessons; it does not change lesson content, calculators, prerequisite maps, or saved learning progress.
+
+Nodes represent topics, including the three digital logic calculators listed in the catalog. Connections distinguish **required prerequisites**, **recommended prerequisites**, and **content references** from existing links between lessons. These reuse the existing learning maps, including suggested study order in the quantum map. A reference means one lesson links to another; it does not imply a prerequisite. Search and filters help narrow the network, and the focused view shows a selected topic and its immediate connections.
+
+Graph code and data load only on `maps/knowledge-graph.html`. Its generated data is `maps/knowledge-graph.json`; rebuild it after lesson links, catalogs, or prerequisite data change:
+
+```bash
+python scripts/build-knowledge-graph.py
+python scripts/build-knowledge-graph.py --check
+```
+
+The second command validates the generated file without rewriting it. Use the full refresh below when catalog or prerequisite source data has also changed. No server database or additional package installation is required.
+
+Run the graph's data and interaction-model regression checks with:
+
+```bash
+python scripts/test-knowledge-graph.py
+node --test scripts/test-knowledge-graph-model.js
+```
 
 ## Project structure (summary)
 
@@ -77,6 +100,7 @@ python scripts/build-prereq-maps.py
 python scripts/build-legacy-physics-list.py
 python scripts/apply-catalog-progression.py
 python scripts/ensure-redirect-stubs.py
+python scripts/build-knowledge-graph.py
 python scripts/check-links.py --scope core
 python scripts/check-links.py --scope all
 ```

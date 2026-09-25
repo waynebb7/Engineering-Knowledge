@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore the connections between engineering, mathematics, physics and quantum topics in an interactive knowledge graph.">
+  <title>Knowledge Graph | Aerospace Engineering Toolkit</title>
+  <link rel="stylesheet" href="../assets/css/corporate.css">
+  <link rel="stylesheet" href="../assets/css/knowledge-graph.css">
+  <script src="../assets/js/site-layout.js" defer></script>
+  <script src="../assets/js/knowledge-graph-model.js" defer></script>
+  <script src="../assets/js/knowledge-graph.js" defer></script>
+</head>
+<body class="knowledge-graph-page">
+  <div class="kg-page">
+    <header class="kg-intro">
+      <div>
+        <p class="kg-eyebrow">A connected view of your learning</p>
+        <h1>Knowledge graph</h1>
+        <p>Follow the connections between subjects. Discover where a topic begins and where it can take you.</p>
+      </div>
+      <a class="kg-catalog-link" href="../learn/index.html">Browse subjects <span aria-hidden="true">&rarr;</span></a>
+    </header>
+
+    <section class="kg-workspace" aria-label="Interactive knowledge graph">
+      <div class="kg-toolbar">
+        <div class="kg-search-group">
+          <label class="kg-sr-only" for="graph-search">Search subjects</label>
+          <div class="kg-search-field">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg>
+            <input id="graph-search" type="search" placeholder="Search subjects and connections" autocomplete="off" aria-describedby="graph-search-help">
+          </div>
+        </div>
+        <div class="kg-toolbar-actions">
+          <label class="kg-mode-label" for="graph-mode">View</label>
+          <select id="graph-mode">
+            <option value="all">Whole graph</option>
+            <option value="focus">Selected subject + connections</option>
+          </select>
+          <button id="graph-reset" type="button" class="kg-button kg-button--quiet">Reset</button>
+        </div>
+      </div>
+
+      <div class="kg-workbench">
+        <aside class="kg-filters" aria-label="Graph filters">
+          <fieldset class="kg-filter-group">
+            <legend>Subjects</legend>
+            <div id="graph-category-filters" class="kg-checkboxes"></div>
+          </fieldset>
+          <fieldset class="kg-filter-group">
+            <legend>Connections</legend>
+            <div id="graph-link-filters" class="kg-checkboxes kg-link-filters">
+              <label><input type="checkbox" name="graph-link-type" value="required" checked><span class="kg-line kg-line--required" aria-hidden="true"></span><span>Required prerequisites</span></label>
+              <label><input type="checkbox" name="graph-link-type" value="recommended" checked><span class="kg-line kg-line--recommended" aria-hidden="true"></span><span>Recommended prerequisites</span></label>
+              <label><input type="checkbox" name="graph-link-type" value="reference" checked><span class="kg-line kg-line--reference" aria-hidden="true"></span><span>Page links</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="kg-filter-group kg-display-filters">
+            <legend>Display</legend>
+            <label class="kg-check"><input id="graph-labels" type="checkbox" checked> Show labels</label>
+            <button id="graph-pause" type="button" class="kg-button kg-button--quiet" aria-pressed="false">Pause layout</button>
+          </fieldset>
+          <p class="kg-filter-note">Larger dots have more connections. Colours distinguish subject areas.</p>
+        </aside>
+
+        <div id="graph-stage" class="kg-stage">
+          <canvas id="graph-canvas" tabindex="0" role="img" aria-label="Interactive subject connections graph. Use the subject list to select a topic." aria-describedby="graph-canvas-help">Explore the same subjects with the subject list beside the graph.</canvas>
+
+          <div class="kg-graph-summary" aria-label="Visible graph totals">
+            <span><strong id="graph-node-count">0</strong> subjects</span>
+            <span class="kg-summary-separator" aria-hidden="true"></span>
+            <span><strong id="graph-edge-count">0</strong> connections</span>
+          </div>
+
+          <div id="graph-loading" class="kg-overlay" role="status">
+            <span class="kg-loading-symbol" aria-hidden="true"></span>
+            <strong>Connecting your subjects&hellip;</strong>
+            <span>Preparing the knowledge graph.</span>
+          </div>
+          <div id="graph-empty" class="kg-overlay" hidden>
+            <span class="kg-empty-symbol" aria-hidden="true">&#9678;</span>
+            <strong>No subjects in this view</strong>
+            <span>Try another search or adjust the filters.</span>
+          </div>
+          <div id="graph-error" class="kg-overlay" role="alert" hidden>
+            <strong>The graph could not be loaded</strong>
+            <p>Try loading it again, or continue exploring the subject catalog.</p>
+            <div class="kg-overlay-actions">
+              <button id="graph-retry" type="button" class="kg-button kg-button--primary">Try again</button>
+              <a href="../learn/index.html" class="kg-button kg-button--quiet">Browse subjects</a>
+            </div>
+          </div>
+
+          <div id="graph-tooltip" class="kg-tooltip" hidden></div>
+          <div class="kg-stage-bottom">
+            <div class="kg-zoom" aria-label="Graph zoom controls">
+              <button id="graph-zoom-out" type="button" aria-label="Zoom out" title="Zoom out">&minus;</button>
+              <output id="graph-zoom-value" aria-label="Zoom level" aria-live="off">100%</output>
+              <button id="graph-zoom-in" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+              <span class="kg-zoom-separator" aria-hidden="true"></span>
+              <button id="graph-fit" type="button" class="kg-fit-button" title="Fit the graph in view">Fit view</button>
+            </div>
+            <p class="kg-canvas-hint" aria-hidden="true">Drag to explore <span>&middot;</span> Scroll to zoom</p>
+          </div>
+        </div>
+
+        <aside class="kg-details" aria-label="Subject details and list">
+          <section class="kg-selection-section" aria-label="Selected subject">
+            <div id="graph-selection-placeholder" class="kg-selection-placeholder">
+              <svg viewBox="0 0 64 48" fill="none" aria-hidden="true"><path d="m13 29 20-17 19 18M13 29l23 9 16-8M33 12l3 26" stroke="currentColor" stroke-width="1.3"></path><circle cx="13" cy="29" r="5" fill="#54d5b0"></circle><circle cx="33" cy="12" r="6" fill="#89aaff"></circle><circle cx="52" cy="30" r="4" fill="#f2c66d"></circle><circle cx="36" cy="38" r="4" fill="#bd9af9"></circle></svg>
+              <h2>Every subject has a story</h2>
+              <p>Select a dot or choose a subject below to explore its connections and open its lesson.</p>
+            </div>
+            <div id="graph-selection" hidden>
+              <div class="kg-selection-heading">
+                <p class="kg-panel-eyebrow">Selected subject</p>
+                <button id="graph-clear-selection" type="button" class="kg-icon-button" aria-label="Clear selected subject" title="Clear selection">&times;</button>
+              </div>
+              <h2 id="graph-selection-title"></h2>
+              <p id="graph-selection-meta" class="kg-selection-meta"></p>
+              <p id="graph-selection-description" class="kg-selection-description"></p>
+              <div class="kg-selection-actions">
+                <a id="graph-selection-open" class="kg-button kg-button--primary" href="../learn/index.html">Open subject <span aria-hidden="true">&rarr;</span></a>
+                <button id="graph-focus-selected" type="button" class="kg-button kg-button--quiet">Focus on connections</button>
+              </div>
+              <h3 class="kg-neighbors-title">Connected subjects</h3>
+              <ul id="graph-selection-connections" class="kg-subject-list kg-connections-list"></ul>
+            </div>
+          </section>
+
+          <section class="kg-browse" aria-labelledby="graph-list-heading">
+            <div class="kg-browse-heading">
+              <h2 id="graph-list-heading">Explore subjects</h2>
+              <span id="graph-list-count" class="kg-count">0</span>
+            </div>
+            <p id="graph-search-help" class="kg-search-help">Search shows matching subjects and their immediate connections.</p>
+            <ul id="graph-subject-list" class="kg-subject-list"></ul>
+          </section>
+        </aside>
+      </div>
+
+      <div class="kg-statusbar">
+        <p id="graph-status" role="status" aria-live="polite" aria-atomic="true">Loading subjects&hellip;</p>
+        <span class="kg-status-label">Knowledge graph</span>
+      </div>
+    </section>
+
+    <details class="kg-help">
+      <summary>How to explore the graph</summary>
+      <div>
+        <p>Each dot is a subject; each line is an existing relationship. Select a subject to see its prerequisites, related pages and connections. Use the focused view to explore its immediate neighbourhood.</p>
+        <p>Prerequisites come from the existing learning maps; the quantum map also includes suggested study order. Page links are references within teaching content. The selected subject panel shows the direction of each relationship.</p>
+        <p id="graph-canvas-help">Drag the background to pan, drag a dot to move it, and scroll to zoom. With the graph focused, use the arrow keys to pan, + and &minus; to zoom, Enter to open the selected subject and Escape to clear the selection. You can also use the buttons in the subject list.</p>
+      </div>
+    </details>
+    <noscript><p class="kg-noscript">JavaScript is needed for the interactive graph. You can still <a href="../learn/index.html">browse all subjects</a> or use the existing prerequisite maps.</p></noscript>
+  </div>
+</body>
+</html>

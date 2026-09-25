@@ -109,6 +109,8 @@ Catalog cross-links use relative paths (e.g. `../mathematics/a-level/vectors.htm
 - `maps/math-prereq-map.html` — mathematics prerequisite graph
 - `maps/physics-prereq-map.html` — physics prerequisite graph
 - `maps/quantum-prereq-map.html` — quantum prerequisite graph
+- `maps/knowledge-graph.html` — read-only lesson network across subjects, with search, filters, and a focused topic view
+- `maps/knowledge-graph.json` — generated lesson nodes and required, recommended, and reference connections
 - `maps/*-topics.json` — graph source data
 - `maps/prereq-node-pages.json` — node ↔ lesson page mapping
 - `legacy/physics-drill-down/` — older physics explorer (not in main nav crawl). Loads `topics.json` over HTTP; `topics-data.js` is bundled for `file://` fallback.
@@ -137,6 +139,7 @@ python scripts/migrate-project-structure.py
 | `scripts/build-topic-progression.py` | Build `scripts/topic-progression.json` (prereqs / next topics) |
 | `scripts/build-prereq-node-pages.py` | Map graph nodes → lesson page hrefs (`maps/prereq-node-pages.json`) |
 | `scripts/build-prereq-maps.py` | Regenerate `maps/*-prereq-map.html` from topic JSON |
+| `scripts/build-knowledge-graph.py` | Build `maps/knowledge-graph.json` from existing lessons and prerequisite data; `--check` verifies the committed output without writing |
 | `scripts/apply-catalog-progression.py` | Inject map strip, Pre-requisites, and Next topics cards on lesson pages |
 | `scripts/extract-quiz-questions.py` | Extract quiz questions from lesson pages |
 | `scripts/build-quiz-answers.py` | Generate `scripts/quiz-answers.json` (optional `sympy` for algebra) |
@@ -161,9 +164,16 @@ python scripts/build-prereq-maps.py
 python scripts/build-legacy-physics-list.py
 python scripts/apply-catalog-progression.py
 python scripts/ensure-redirect-stubs.py
+python scripts/build-knowledge-graph.py
 python scripts/verify-redirect-stubs.py
 python scripts/check-links.py --scope core
 ```
+
+## Knowledge graph
+
+The knowledge graph is independent of learning progress storage. Its runtime and data load only on the Graph page. Lesson pages receive a **View connections** link from `site-layout.js`; the link passes the site-relative lesson path to `maps/knowledge-graph.html?node=…&view=focus`, including when the site is hosted under `/engineering/`.
+
+The graph reads existing relationships: required and recommended prerequisite connections, plus references from links within lesson content. References do not assert a prerequisite. Rebuild the graph after changing lesson links or prerequisite sources, after the catalog/progression/node mapping builders have run. The graph does not create or edit links in this first version.
 
 ## Learning progress
 
@@ -180,7 +190,7 @@ GitHub Actions (`.github/workflows/ci.yml`) runs:
 
 1. `node --check` on `assets/js/*.js`
 2. `python -m compileall scripts`
-3. Regenerate catalog, progression, and prereq map artifacts — fail if committed files drift
+3. Regenerate catalog, progression, prerequisite map, and knowledge graph artifacts — fail if committed files drift
 4. Regenerate legacy physics topic list
 5. Create and verify backward-compatibility redirect stubs
 6. `python scripts/check-links.py --scope core` and `--scope all`
@@ -198,6 +208,7 @@ Main nav is defined in `assets/js/site-layout.js`:
 - Home → `index.html` (includes the Reference tile with links to all reference pages)
 - Calculators → `calculators/index.html`
 - Learn → `learn/index.html` (hub for mathematics, physics, quantum, and digital logic)
+- Graph → `maps/knowledge-graph.html` (connected lessons across subjects)
 - Documents → `reference/documents/index.html`
 - Progress → `progress.html`
 - Feedback → `feedback.html`
